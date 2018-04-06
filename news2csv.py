@@ -9,7 +9,7 @@ import csv
 import datetime
 import time
 import re
-from operator import itemgetter
+#from operator import itemgetter
 from urllib.parse import urlparse
 
 # Third party libraries
@@ -95,7 +95,7 @@ class ArticleRecord(object):
         return
 
 class NewsSite(object):
-    """News site object.  Stores lists of past, current articles."""
+    """News site object:: stores lists of past, current articles."""
 
     def __init__(self, src):
         self.url = src['url']
@@ -105,7 +105,7 @@ class NewsSite(object):
         self.paper = newspaper.build(self.url, language=config.LANGUAGE, memoize_articles=config.MEMOIZE_ARTICLES)
 
 class ArticleHistory(object):
-    """Past history: record of what has been downloaded."""
+    """Past history object: record of what has been downloaded."""
 
     def __init__(self, history_file=config.OUTPUT_FILE):
         self.history_file = history_file
@@ -127,13 +127,15 @@ class ArticleHistory(object):
 def main():
     """Main program loop."""
 
+    # Get list of past articles by reading the CSV file
     history = ArticleHistory(config.OUTPUT_FILE)
 
+    # Process each site's current list of articles
+    total_count = 0
+    success_count = 0
     for src in config.NEWS_SOURCES:
         site = NewsSite(src)
         print('\n' + site.url, site.paper.size())
-        total_count = 0
-        success_count = 0
         for article in site.paper.articles:
             r = ArticleRecord(article, site, history)
             if r.get_download():
@@ -141,8 +143,10 @@ def main():
                     r.write_rec()
                     success_count += 1
             total_count += 1
-            if total_count >= config.ARTICLE_LIMIT:
+            if success_count >= config.ARTICLE_LIMIT:
                 break
+    print('\nScanned', total_count, 'articles')
+    print('Downloaded', success_count, 'new articles')
 
 if __name__ == "__main__":
     main()
