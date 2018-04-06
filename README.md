@@ -42,7 +42,7 @@ downloaded.
 The generated CSV file has these fields, most of them copied from the
 Articles objects populated by the Newspaper3k library.  If the field
 isn't explained below, see the
-newspaper documentation](http://newspaper.readthedocs.io/en/latest/)
+[newspaper documentation](http://newspaper.readthedocs.io/en/latest/)
 for the definition.
 
 * `run_time`: The time that the application started.  The same timestamp
